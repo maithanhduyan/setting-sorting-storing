@@ -8,7 +8,8 @@ import click
 # Khởi tạo ứng dụng Flask
 app = Flask(__name__)
 CORS(app)  # Kích hoạt Flask-CORS
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assets.db'  # Đường dẫn đến file SQLite
+# Đường dẫn đến file SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///assets.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Khởi tạo đối tượng SQLAlchemy và Marshmallow
@@ -19,6 +20,8 @@ ma = Marshmallow(app)
 migrate = Migrate(app, db)
 
 # Định nghĩa mô hình Asset
+
+
 class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -127,6 +130,7 @@ def create_sample_assets(count):
     db.session.commit()
 
     click.echo(f'Đã tạo thành công {count} asset dữ liệu mẫu.')
+
 
 # Khởi tạo cơ sở dữ liệu SQLite và chạy ứng dụng trên cổng 5000
 if __name__ == '__main__':
