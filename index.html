@@ -1,172 +1,195 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>Asset Management</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <title>Asset Management</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
+
 <body>
-  <h1>Asset Management</h1>
+    <h1>Asset Management</h1>
 
-  <table id="assetTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Code</th>
-        <th>Price</th>
-        <th>Website</th>
-        <th>Description</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <table id="assetTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Price</th>
+                <th>Website</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-  <h2>Add Asset</h2>
-  <form id="addAssetForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" required><br>
 
-    <label for="code">Code:</label>
-    <input type="text" id="code" required><br>
+    <form id="asssetForm">
+        <input type="hidden" id="id" value="">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br>
 
-    <label for="price">Price:</label>
-    <input type="number" id="price" required><br>
+        <label for="code">Code:</label>
+        <input type="text" id="code" required><br>
 
-    <label for="website">Website:</label>
-    <input type="url" id="website" required><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" required><br>
 
-    <label for="description">Description:</label>
-    <textarea id="description" required></textarea><br>
+        <label for="website">Website:</label>
+        <input type="url" id="website" required><br>
 
-    <button type="submit">Add</button>
-  </form>
+        <label for="description">Description:</label>
+        <textarea id="description" required></textarea><br>
 
-  <script>
-    // Hàm để hiển thị danh sách tài sản
-    function displayAssets(assets) {
-      var tableBody = $('#assetTable tbody');
-      tableBody.empty();
+        <button type="button" id="submitBtn">Add</button>
+        <button id="cancel" onclick="cancelEdit()">Cancel</button>
+    </form>
 
-      $.each(assets, function (index, asset) {
-        var row = '<tr>';
-        row += '<td>' + asset.id + '</td>';
-        row += '<td>' + asset.name + '</td>';
-        row += '<td>' + asset.code + '</td>';
-        row += '<td>' + asset.price + '</td>';
-        row += '<td>' + asset.website + '</td>';
-        row += '<td>' + asset.description + '</td>';
-        row += '<td><button onclick="editAsset(' + asset.id + ')">Edit</button> <button onclick="deleteAsset(' + asset.id + ')">Delete</button></td>';
-        row += '</tr>';
-        tableBody.append(row);
-      });
-    }
+    <script>
+        // Hàm để hiển thị danh sách tài sản
+        function displayAssets(assets) {
+            var tableBody = $('#assetTable tbody');
+            tableBody.empty();
 
-    // Lấy danh sách tài sản từ RESTful API
-    function getAssets() {
-      $.get('http://localhost:5000/assets', function (assets) {
-        displayAssets(assets);
-      });
-    }
-
-    // Thêm mới tài sản
-    $('#addAssetForm').submit(function (event) {
-      event.preventDefault();
-
-      var name = $('#name').val();
-      var code = $('#code').val();
-      var price = $('#price').val();
-      var website = $('#website').val();
-      var description = $('#description').val();
-
-      var asset = {
-        name: name,
-        code: code,
-        price: price,
-        website: website,
-        description: description
-      };
-
-      $.post('http://localhost:5000/assets', asset, function (response) {
-        getAssets();
-        $('#addAssetForm')[0].reset();
-      });
-    });
-
-    // Xóa tài sản
-    function deleteAsset(id) {
-      $.ajax({
-        url: 'http://localhost:5000/assets/' + id,
-        type: 'DELETE',
-        success: function (response) {
-          getAssets();
+            $.each(assets, function (index, asset) {
+                var row = '<tr>';
+                row += '<td>' + asset.id + '</td>';
+                row += '<td>' + asset.name + '</td>';
+                row += '<td>' + asset.code + '</td>';
+                row += '<td>' + asset.price + '</td>';
+                row += '<td>' + asset.website + '</td>';
+                row += '<td>' + asset.description + '</td>';
+                row += '<td><button onclick="editAsset(' + asset.id + ')">Edit</button> <button onclick="deleteAsset(' + asset.id + ')">Delete</button></td>';
+                row += '</tr>';
+                tableBody.append(row);
+            });
         }
-      });
-    }
 
-    // Chỉnh sửa tài sản
-    function editAsset(id) {
-      // Lấy thông tin tài sản theo id
-      $.get('http://localhost:5000/assets/' + id, function (asset) {
-        // Hiển thị form chỉnh sửa
-        var editForm = '<h2>Edit Asset</h2>';
-        editForm += '<form id="editAssetForm">';
-        editForm += '<input type="hidden" id="editId" value="' + asset.id + '">';
-        editForm += '<label for="editName">Name:</label>';
-        editForm += '<input type="text" id="editName" value="' + asset.name + '" required><br>';
-        editForm += '<label for="editCode">Code:</label>';
-        editForm += '<input type="text" id="editCode" value="' + asset.code + '" required><br>';
-        editForm += '<label for="editPrice">Price:</label>';
-        editForm += '<input type="number" id="editPrice" value="' + asset.price + '" required><br>';
-        editForm += '<label for="editWebsite">Website:</label>';
-        editForm += '<input type="url" id="editWebsite" value="' + asset.website + '" required><br>';
-        editForm += '<label for="editDescription">Description:</label>';
-        editForm += '<textarea id="editDescription" required>' + asset.description + '</textarea><br>';
-        editForm += '<button type="submit">Save</button> <button onclick="cancelEdit()">Cancel</button>';
-        editForm += '</form>';
+        // Lấy danh sách tài sản từ RESTful API
+        function getAssets() {
+            $.get('http://localhost:5000/assets', function (assets) {
+                displayAssets(assets);
+                $('#cancel').hide();
+                $("#submitBtn").text("Add");
+            });
+        }
 
-        $('#addAssetForm').html(editForm);
+        // Thêm mới tài sản
+        $('#submitBtn').on('click', function (event) {
+            event.preventDefault();
+            var btn = $('#submitBtn').text();
 
-        // Gửi yêu cầu cập nhật tài sản
-        $('#editAssetForm').submit(function (event) {
-          event.preventDefault();
+            var name = $('#name').val();
+            var code = $('#code').val();
+            var price = $('#price').val();
+            var website = $('#website').val();
+            var description = $('#description').val();
 
-          var id = $('#editId').val();
-          var name = $('#editName').val();
-          var code = $('#editCode').val();
-          var price = $('#editPrice').val();
-          var website = $('#editWebsite').val();
-          var description = $('#editDescription').val();
+            var asset = {
+                name: name,
+                code: code,
+                price: price,
+                website: website,
+                description: description
+            };
 
-          var asset = {
-            name: name,
-            code: code,
-            price: price,
-            website: website,
-            description: description
-          };
+            if (btn === 'Add') {
+                console.log('Add');
+                $.ajax({
+                    url: 'http://localhost:5000/assets',
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(asset),
+                    success: function (response) {
+                        getAssets();
+                        $("#submitBtn").text("Add");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
 
-          $.ajax({
-            url: 'http://localhost:5000/assets/' + id,
-            type: 'PUT',
-            data: asset,
-            success: function (response) {
-              getAssets();
-              $('#addAssetForm')[0].reset();
+            } else if (btn === 'Edit') {
+                console.log('Edit');
+                var id = $('#id').val();
+                $.ajax({
+                    url: 'http://localhost:5000/assets/'+id,
+                    type: 'PUT',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(asset),
+                    beforeSend: function () {
+                        console.log(asset);
+                    },
+                    success: function (response) {
+                        getAssets();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
             }
-          });
+            $("#asssetForm").trigger('reset');
         });
-      });
-    }
 
-    // Hủy chỉnh sửa
-    function cancelEdit() {
-      $('#addAssetForm')[0].reset();
-    }
+        // Xóa tài sản
+        function deleteAsset(id) {
+            $.ajax({
+                url: 'http://localhost:5000/assets/' + id,
+                type: 'DELETE',
 
-    // Load danh sách tài sản khi trang được tải
-    getAssets();
-  </script>
+                success: function (response) {
+                    getAssets();
+                }
+            });
+        }
+
+        function getAssetsById(id) {
+            // Lấy thông tin tài sản theo id
+            $.ajax({
+                url: 'http://localhost:5000/assets/' + id,
+                type: 'GET',
+                dataType: 'json',
+                beforeSend: function () {
+                    console.log('Get Asset with ID: ' + id);
+                },
+                success: function (asset) {
+                    console.log(asset);
+                    // Hiển thị form chỉnh sửa
+                    $('#name').val(asset.name);
+                    $('#code').val(asset.code);
+                    $('#price').val(asset.price);
+                    $('#website').val(asset.website);
+                    $('#description').val(asset.description);
+                    $("#submitBtn").text("Edit");
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+
+            });
+        }
+
+        // Chỉnh sửa tài sản
+        function editAsset(id) {
+            // Lấy thông tin tài sản theo id
+            getAssetsById(id);
+            $('#id').val(id);
+            $('#cancel').show();
+        }
+
+        // Hủy chỉnh sửa
+        function cancelEdit() {
+            $("#asssetForm").trigger('reset');
+            $('#cancel').hide();
+        }
+
+        // Load danh sách tài sản khi trang được tải
+        getAssets();
+    </script>
 </body>
+
 </html>
