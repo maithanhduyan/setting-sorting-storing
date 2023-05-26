@@ -2,9 +2,12 @@
 - Python 3.7.7
 - Flask
 - SQLAlchemy
-- 
+
 - create virtual venv
 > python -m venv venv
+
+- activate virtual venv
+> venv\Scripts\activate
 
 - Upgrade pip
 > python -m pip install --upgrade pip
@@ -22,3 +25,16 @@ or
 > flask db migrate -m "Create asset table"
 > flask db upgrade
 
+
+## Project Structure
+~~~~
+- server
+    - db
+        - database.db
+    - tools
+        - database.py
+    - model
+        - asset.py
+    - app.py
+
+~~~~
