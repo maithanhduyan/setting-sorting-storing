@@ -1,0 +1,24 @@
+{
+  "name": "window",
+  "version": "1.0.0",
+  "description": "Setting Sorting Storing",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maithanhduyan/setting-sorting-storing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maithanhduyan/setting-sorting-storing/issues"
+  },
+  "homepage": "https://github.com/maithanhduyan/setting-sorting-storing#readme",
+  "keywords": [],
+  "dependencies": {
+    "bitcoinjs-lib": "^6.1.1",
+    "electron": "^24.4.0"
+  }
+}

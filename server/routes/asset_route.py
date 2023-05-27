@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, redirect
+from flask import Blueprint, jsonify, request
 from flask_marshmallow import Marshmallow
 from models.asset import Asset
 from db import db
